@@ -16,7 +16,7 @@ endif
 default_recipe: build
 
 build: install build-react build-electron build-python
-	echo build
+	
 
 install:
 ifeq ($(UNAME),WIN32)
@@ -36,13 +36,18 @@ build-react: src/index.tsx
 	npm run build-react
 
 build-electron:
-	npm run build-electron
-	npm run package-electron-linux
+ifeq ($(UNAME),WIN32)
+	npm run build-electron-windows
+	npm run package-electron-windows
+else
+	npm run build-electron-linux
+	npm run package-electron-linux	
+endif
 
 build-python: exceldiff/exceldiff.py
 ifeq ($(UNAME),WIN32)
 	.\venv\Scripts\activate.bat
-	venv/bin/pyinstaller --onefile -y exceldiff/exceldiff.py --distpath dist/exceldiff-win32-x64/bin/
+	pyinstaller --onefile -y exceldiff\exceldiff.py --distpath dist\exceldiff-win32-x64\bin
 else
 	. venv/bin/activate
 	venv/bin/pyinstaller --onefile -y exceldiff/exceldiff.py --distpath dist/exceldiff-linux-x64/bin/

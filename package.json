@@ -15,9 +15,10 @@
 		"start": "NODE_ENV=development electron build/main",
 		"dev-server": "react-scripts start",
 		"build-react": "react-scripts build",
-		"build-electron": "tsc --build src/electron/tsconfig.json && cp src/electron/preload.js build/ && cp src/electron/package.json ./build/ && npm -C build install --no-package-lock",
+		"build-electron-linux": "tsc --build src/electron/tsconfig.json && cp src/electron/preload.js build/ && cp src/electron/package.json ./build/ && cd build && npm install --no-package-lock",
+		"build-electron-windows": "tsc --build .\\src\\electron\\tsconfig.json && copy .\\src\\electron\\preload.js build\\ && copy .\\src\\electron\\package.json .\\build\\ && cd build && npm install --no-package-lock",
 		"package-electron-linux": "electron-packager ./build exceldiff --out=./dist --platform=linux --arch=x64 --overwrite --ignore=./build/exceldiff && sudo chown root:root ./dist/exceldiff-linux-x64/chrome-sandbox && sudo chmod 4755 ./dist/exceldiff-linux-x64/chrome-sandbox",
-		"package-electron-windows": "electron-packager ./build exceldiff --out=./dist --platform=win32 --arch=x64 --overwrite --ignore=./build/exceldiff",
+		"package-electron-windows": "electron-packager .\\build exceldiff --out=.\\dist --platform=win32 --arch=x64 --overwrite --ignore=.\\build\\exceldiff",
 		"build-windows": "npm run build-react && npm run build electron && package-electron-windows"
 	},
 	"eslintConfig": {

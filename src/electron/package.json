@@ -1,0 +1,11 @@
+{
+	"name": "exceldiff",
+	"version": "0.1.0",
+	"main": "main.js",
+	"dependencies": {
+		"materialize-css": "^1.0.0"
+	},
+	"devDependencies": {
+		"electron": "^8.1.1"
+	}
+}

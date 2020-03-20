@@ -1,0 +1,12 @@
+.~*
+*.xlsx
+out/
+dist/
+data/
+.idea
+venv
+build
+*.log
+*.spec
+node_modules
+yarn.lock

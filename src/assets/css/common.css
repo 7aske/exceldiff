@@ -1,0 +1,9 @@
+#output table thead {
+  color: white;
+}
+#output table tr {
+  border-bottom-color: darkgrey;
+}
+#output table tbody {
+  color: white;
+}

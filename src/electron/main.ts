@@ -8,7 +8,7 @@ let mainWindow: BrowserWindow | null = null;
 async function main() {
 	mainWindow = new BrowserWindow({
 		height: 768,
-		width: 1024,
+		width: 1333,
 		title: "ExcelDiff",
 		center: true,
 		resizable: true,

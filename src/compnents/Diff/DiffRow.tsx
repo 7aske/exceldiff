@@ -1,15 +1,16 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type DiffRowProps = {
 	row: string
 };
 export const DiffRow = ({row}: DiffRowProps) => {
+	const [fade, setFade] = useState("");
 	useEffect(() => {
 		console.log(row);
 	}, [row]);
 	return (
-		<tr>
+		<tr className={fade} onClick={() => fade === "" ? setFade("fade") : setFade("")}>
 			{row.split("' '").map((str, i) => {
 				if (str.startsWith("Unnamed: ")) {
 					str = str.replace("Unnamed: ", "");
@@ -19,7 +20,7 @@ export const DiffRow = ({row}: DiffRowProps) => {
 						out += String.fromCharCode((Math.floor(curr / 26) + 65));
 						curr -= 26;
 					}
-					str = out;
+					str = out + "-" + str;
 				} else if (i === 0) {
 					str = str.substring(1);
 				} else if (i === 1) {
@@ -29,7 +30,7 @@ export const DiffRow = ({row}: DiffRowProps) => {
 						out += String.fromCharCode((Math.floor(curr / 26) + 65));
 						curr -= 26;
 					}
-					str = out;
+					str = out + str;
 				} else if (i === 2) {
 					str = parseInt(str) + 2 + "";
 				} else if (i === 4) {

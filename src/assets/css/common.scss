@@ -3,12 +3,25 @@
 
 		thead {
 			color: white;
-			th{
+
+			th {
 			}
 		}
-		tr{
-			border-bottom-color: darkgrey;
+
+		tr {
+			padding-left: 1em;
+			border-left: 10px solid transparent;
+			&:hover {
+				border-left: 10px solid slategrey;
+				cursor: pointer;
+			}
+
+			&.fade {
+				border-left: 10px solid darkslategrey;
+				color: #7f7f7f;
+			}
 		}
+
 		tbody {
 			color: white;
 		}

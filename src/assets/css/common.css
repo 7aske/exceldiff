@@ -2,7 +2,16 @@
   color: white;
 }
 #output table tr {
-  border-bottom-color: darkgrey;
+  padding-left: 1em;
+  border-left: 10px solid transparent;
+}
+#output table tr:hover {
+  border-left: 10px solid slategrey;
+  cursor: pointer;
+}
+#output table tr.fade {
+  border-left: 10px solid darkslategrey;
+  color: #7f7f7f;
 }
 #output table tbody {
   color: white;

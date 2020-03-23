@@ -13,11 +13,17 @@ export const Diff = (props: DiffProps) => {
 
 	const [output, setOutput] = useState<string[]>([]);
 	const [errMsg, setErrMsg] = useState("");
+	const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
+	const diff = () => {
 		if (file1 !== "" && file2 !== "") {
 			(window as any).ipcRenderer.send("do-diff", [file1, file2]);
+			setLoading(true);
 		}
+	};
+
+	useEffect(() => {
+		diff();
 		// eslint-disable-next-line
 	}, [file1, file2]);
 
@@ -30,6 +36,7 @@ export const Diff = (props: DiffProps) => {
 			} else {
 				setErrMsg(args.data);
 			}
+			setLoading(false);
 		});
 		// eslint-disable-next-line
 	}, []);
@@ -69,8 +76,14 @@ export const Diff = (props: DiffProps) => {
 					<input className="file-path" type="text"/>
 				</div>
 			</div>
+			<div className="input-field">
+				<a className="waves-effect green lighten-2 btn" onClick={()=>diff()}>&nbsp;diff&nbsp;</a>
+			</div>
 			<div>
 				<div id="output">
+					{loading ? <div className="progress">
+						<div className="indeterminate"/>
+					</div> : <div className="progress"><br/></div>}
 					{errMsg === "" ?
 						<table className="responsive-table">
 							<thead>

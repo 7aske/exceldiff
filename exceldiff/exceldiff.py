@@ -52,9 +52,9 @@ def main():
 	for sheet in df_OLD.keys():
 		for col in df_OLD[sheet].keys():
 			for row in df_OLD[sheet][col].keys():
-				value_OLD = df_OLD[sheet][col][row]
+				value_OLD = str(df_OLD[sheet][col][row])
 				try:
-					value_NEW = df_NEW[sheet][col][row]
+					value_NEW = str(df_NEW[sheet][col][row])
 
 					if value_OLD != value_NEW:
 						plain_data += plain_row_format(sheet, col, row, value_OLD, value_NEW)
@@ -71,9 +71,9 @@ def main():
 	for sheet in df_NEW.keys():
 		for col in df_NEW[sheet].keys():
 			for row in df_NEW[sheet][col].keys():
-				value_OLD = df_NEW[sheet][col][row]
+				value_OLD = str(df_NEW[sheet][col][row])
 				try:
-					value_NEW = df_OLD[sheet][col][row]
+					value_NEW = str(df_OLD[sheet][col][row])
 				except Exception as e:
 					if value_OLD.strip(" ") != "":
 						plain_data += plain_row_format(sheet, col, row, value_OLD, "")

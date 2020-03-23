@@ -11,6 +11,7 @@ import pandas as pd
 
 opts = None
 
+
 def main():
 	opts = getoptions(getparser(), argv)
 	path_OLD = opts.book1
@@ -103,7 +104,7 @@ def print_help():
 
 def print_usage(message):
 	getparser().print_usage(file=stderr)
-	stderr.buffer.write(message)
+	stderr.buffer.write(bytes(message, encoding="utf8"))
 	exit(2)
 
 

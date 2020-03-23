@@ -31,12 +31,12 @@ ipcMain.on("do-diff", (event, args) => {
 	let cmd;
 	if (process.env.NODE_ENV === "development") {
 		console.log(args);
-		cmd = `python ${process.cwd()}/exceldiff/exceldiff.py -t text ${args[0]} ${args[1]}`;
+		cmd = `python ${process.cwd()}/exceldiff/exceldiff.py -t text "${args[0]}" "${args[1]}"`;
 	} else {
 		if (process.platform === "win32") {
-			cmd = `${process.cwd()}/bin/exceldiff.exe -t text ${args[0]} ${args[1]}`;
+			cmd = `${process.cwd()}/bin/exceldiff.exe -t text "${args[0]}" "${args[1]}"`;
 		} else {
-			cmd = `${process.cwd()}/bin/exceldiff -t text ${args[0]} ${args[1]}`;
+			cmd = `${process.cwd()}/bin/exceldiff -t text "${args[0]}" "${args[1]}"`;
 		}
 	}
 	exec(cmd, (err, stdout, stderr) => {

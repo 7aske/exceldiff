@@ -76,7 +76,7 @@ export const Diff = (props: DiffProps) => {
 				</div>
 			</div>
 			<div className="input-field">
-				<a className="waves-effect green lighten-2 btn" onClick={() => diff()}>&nbsp;diff&nbsp;</a>&nbsp;
+				<a className="waves-effect green lighten-1 btn" onClick={() => diff()}>refresh</a>&nbsp;
 			</div>
 			<div>
 				<div id="output">

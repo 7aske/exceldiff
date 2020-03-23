@@ -29,7 +29,6 @@ export const Diff = (props: DiffProps) => {
 
 	useEffect(() => {
 		(window as any).ipcRenderer.on("diff-out", (event: any, args: { valid: boolean, data: string }) => {
-			console.log(args);
 			if (args.valid) {
 				setErrMsg("");
 				setOutput(args.data.split("\n"));
@@ -77,7 +76,7 @@ export const Diff = (props: DiffProps) => {
 				</div>
 			</div>
 			<div className="input-field">
-				<a className="waves-effect green lighten-2 btn" onClick={()=>diff()}>&nbsp;diff&nbsp;</a>
+				<a className="waves-effect green lighten-2 btn" onClick={() => diff()}>&nbsp;diff&nbsp;</a>&nbsp;
 			</div>
 			<div>
 				<div id="output">

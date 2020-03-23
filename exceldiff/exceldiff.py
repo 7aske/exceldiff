@@ -11,7 +11,6 @@ import pandas as pd
 
 opts = None
 
-
 def main():
 	opts = getoptions(getparser(), argv)
 	path_OLD = opts.book1
@@ -84,9 +83,9 @@ def main():
 
 	if opts.type in ["json", "j"]:
 		if opts.pretty:
-			print(json.dumps(json_data, indent=4))
+			stdout.buffer.write(bytes(json.dumps(json_data, indent=4), encoding="utf8"))
 		else:
-			print(json.dumps(json_data))
+			stdout.buffer.write(bytes(json.dumps(json_data), encoding="utf8"))
 	elif opts.type in ["xlsx", "x"]:
 		with tempfile.NamedTemporaryFile(suffix=xlsx_fname) as file:
 			output_diff_xlsx(file.name, json_data, df_OLD)
@@ -94,7 +93,7 @@ def main():
 			data = file.read()
 			stdout.buffer.write(data)
 	elif opts.type in ["text", "t"]:
-		print(plain_data)
+		stdout.buffer.write(bytes(plain_data, encoding="utf8"))
 
 
 def print_help():
@@ -104,7 +103,7 @@ def print_help():
 
 def print_usage(message):
 	getparser().print_usage(file=stderr)
-	print(message, file=stderr)
+	stderr.buffer.write(message)
 	exit(2)
 
 
@@ -112,7 +111,7 @@ def getparser():
 	parser = argparse.ArgumentParser(description="Shows the difference between two excel workbooks")
 	parser.add_argument('book1', type=str, help='Old diff book')
 	parser.add_argument('book2', type=str, help='New diff book')
-	parser.add_argument('-t', "--type", type=str, default="json", choices=["json", "j", "xlsx", "x", "text", "t"],
+	parser.add_argument('-t', "--type", type=str, default="text", choices=["json", "j", "xlsx", "x", "text", "t"],
 	                    help='output type (xlsx, json, plain)')
 	parser.add_argument("--pretty", action="store_true", default=False, help="pretty print json")
 	return parser
@@ -132,7 +131,7 @@ def get_book_version(book_name: str):
 
 def diff(file1, file2):
 	if not exists(file1):
-		return"{}: no such file".format(file1)
+		return "{}: no such file".format(file1)
 	if not exists(file2):
 		return "{}: no such file".format(file2)
 

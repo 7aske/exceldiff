@@ -80,14 +80,15 @@ def main():
 		else:
 			data_str = json.dumps(json_data)
 
+		stdout.buffer.write(bytes(data_str, encoding="utf8"))
+
 		if opts.outfile:
 			filename = opts.outfile
 			if not filename.endswith(".json"):
 				filename += ".json"
 			with open(filename, "w") as file:
 				file.write(data_str)
-		else:
-			stdout.buffer.write(bytes(data_str, encoding="utf8"))
+				stderr.buffer.write(bytes(f"Output written to {filename}", encoding="utf8"))
 
 	elif opts.type in ["xlsx", "x"]:
 		with tempfile.NamedTemporaryFile(suffix=xlsx_fname) as tfile:
@@ -100,6 +101,7 @@ def main():
 					filename += ".xlsx"
 				with open(filename, "w") as file:
 					file.buffer.write(data)
+					stderr.buffer.write(bytes(f"Output written to {filename}", encoding="utf8"))
 			else:
 				stdout.buffer.write(data)
 
@@ -270,6 +272,7 @@ def output_diff_xlsx(fname: str, data: dict, df_OLD):
 		workbook = writer.book
 		worksheet = writer.sheets[diff_sheet]
 		highlight_fmt = workbook.add_format({"font_color": "#FF0000", "bg_color": "#B1B3B3"})
+
 		worksheet.conditional_format("A1:ZZ1000", {"type"    : "text",
 		                                           "criteria": "containing",
 		                                           "value"   : "→",

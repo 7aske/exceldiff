@@ -16,3 +16,12 @@
 #output table tbody {
   color: white;
 }
+
+.btn-floating {
+  user-select: none;
+}
+
+nav img {
+  height: 50px;
+  width: 50px;
+}

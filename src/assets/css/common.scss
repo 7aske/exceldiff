@@ -11,6 +11,7 @@
 		tr {
 			padding-left: 1em;
 			border-left: 10px solid transparent;
+
 			&:hover {
 				border-left: 10px solid slategrey;
 				cursor: pointer;
@@ -25,5 +26,16 @@
 		tbody {
 			color: white;
 		}
+	}
+}
+
+.btn-floating {
+	user-select: none;
+}
+
+nav {
+	img {
+		height: 50px;
+		width: 50px;
 	}
 }

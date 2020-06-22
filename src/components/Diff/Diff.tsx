@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createRef, useEffect, useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
 import { DiffRow } from "./DiffRow";
 // import { ipcRenderer } from "electron";
 
@@ -7,11 +7,18 @@ type DiffProps = {};
 export const Diff = (props: DiffProps) => {
 	const [file1, setFile1] = useState("");
 	const [file2, setFile2] = useState("");
+	// const [disabled, setDisabled] = useState(true);
 
 	const fileInput1 = createRef<HTMLInputElement>();
 	const fileInput2 = createRef<HTMLInputElement>();
-	const floatingActionButtonRef = createRef<HTMLDivElement>();
-	const openExternalRef = createRef<HTMLAnchorElement>();
+
+	const _floatingActionButtonRef = createRef<HTMLDivElement>();
+	const floatingActionButtonRef = useRef<any>();
+	const _openExternalRef = createRef<HTMLAnchorElement>();
+	const openExternalRef = useRef<any>();
+	const _generateDiffFileRef = createRef<HTMLAnchorElement>();
+	const generateDiffFileRef = useRef<any>();
+
 
 	const [output, setOutput] = useState<string[]>([]);
 	const [errMsg, setErrMsg] = useState("");
@@ -24,18 +31,40 @@ export const Diff = (props: DiffProps) => {
 		}
 	};
 
-	function diffFile() {
+	const diffFile = () => {
 		if (file1 !== "" && file2 !== "") {
 			(window as any).ipcRenderer.send("do-diff-file", [file1, file2]);
 			setLoading(true);
 		}
-	}
+	};
 
-	function openExternal() {
+	const openExternal = () => {
 		if (file1 !== "" && file2 !== "") {
 			(window as any).ipcRenderer.send("do-diff-file-open", [file1, file2]);
 		}
-	}
+	};
+
+	const toggleDisabled = (args: any) => {
+		if (generateDiffFileRef.current) {
+			if (args.exists) {
+				generateDiffFileRef.current.classList.remove("disabled");
+			} else {
+				generateDiffFileRef.current.classList.add("disabled");
+			}
+		}
+
+	};
+
+	const openExternalToggleDisabled = (args: any) => {
+
+		if (openExternalRef.current) {
+			if (args.exists) {
+				openExternalRef.current.classList.remove("disabled");
+			} else {
+				openExternalRef.current.classList.add("disabled");
+			}
+		}
+	};
 
 	const reloadTooltips = () => {
 		M.Tooltip.init(document.querySelectorAll(".tooltipped"), {});
@@ -43,15 +72,11 @@ export const Diff = (props: DiffProps) => {
 
 	useEffect(() => {
 		diff();
+		toggleDisabled({exists: file1 && file2});
 
-		if (openExternalRef.current) {
-			if (file1 && file2) {
-				openExternalRef.current.classList.remove("disabled");
-			} else {
-				openExternalRef.current.classList.add("disabled");
-			}
+		if (!file1 && !file2) {
+			openExternalToggleDisabled({exists: false});
 		}
-
 		// eslint-disable-next-line
 	}, [file1, file2]);
 
@@ -66,12 +91,31 @@ export const Diff = (props: DiffProps) => {
 			setLoading(false);
 		});
 
+		// hacky hacky code
+		if (_openExternalRef.current) {
+			openExternalRef.current = _openExternalRef.current;
+		}
+
+		if (_floatingActionButtonRef.current) {
+			floatingActionButtonRef.current = _floatingActionButtonRef.current;
+		}
+
+		if (_generateDiffFileRef.current) {
+			generateDiffFileRef.current = _generateDiffFileRef.current;
+		}
+
+		(window as any).ipcRenderer.on("diff-file-exists", (event: any, args: { exists: boolean }) => {
+			openExternalToggleDisabled(args);
+		});
+
 		reloadTooltips();
+
 		if (floatingActionButtonRef.current) {
 			M.FloatingActionButton.init(floatingActionButtonRef.current, {
-				hoverEnabled: false,
+				hoverEnabled: true,
 			});
 		}
+
 		// eslint-disable-next-line
 	}, []);
 
@@ -128,16 +172,17 @@ export const Diff = (props: DiffProps) => {
 				</div>
 			</div>
 
-			<div className="fixed-action-btn" ref={floatingActionButtonRef}>
+			<div className="fixed-action-btn" ref={_floatingActionButtonRef}>
 				<a className="btn-floating btn-large cyan">
 					<i className="large material-icons">expand_less</i>
 				</a>
 				<ul>
-					<li><a className="btn-floating amber disabled tooltipped" ref={openExternalRef}
+					<li><a className="btn-floating amber disabled tooltipped" ref={_openExternalRef}
 					       onClick={() => openExternal()}
-					       data-position="left" data-tooltip="Open external">
+					       data-position="left" data-tooltip="Open diff file">
 						<i className="material-icons">open_in_new</i></a></li>
-					<li><a className="btn-floating red tooltipped" onClick={() => diffFile()}
+					<li><a className="btn-floating red disabled tooltipped" ref={_generateDiffFileRef}
+					       onClick={() => diffFile()}
 					       data-position="left" data-tooltip="Generate diff .xlsx file">
 						<i className="material-icons">insert_drive_file</i></a></li>
 					<li><a className="btn-floating green tooltipped" onClick={() => diff()}

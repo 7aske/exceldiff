@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import re
-from os.path import exists, basename, splitext
+from os.path import exists, basename, splitext, join
+from os import urandom
 from sys import stderr, argv, exit, stdout
 import argparse
 from typing import List
@@ -91,10 +92,11 @@ def main():
 				stderr.buffer.write(bytes(f"Output written to {filename}", encoding="utf8"))
 
 	elif opts.type in ["xlsx", "x"]:
-		with tempfile.NamedTemporaryFile(suffix=xlsx_fname) as tfile:
+		with tempfile.NamedTemporaryFile(prefix="exceldiff-", suffix="-"+xlsx_fname, delete=False) as tfile:
 			output_diff_xlsx(tfile.name, json_data, df_old)
 			tfile.seek(0)
 			data = tfile.read()
+
 			if opts.outfile:
 				filename = opts.outfile
 				if not filename.endswith(".xlsx"):
@@ -251,21 +253,21 @@ def add_value(data: dict, sheet: str = None, col: str = None, row: str = None, v
 	data[sheet][col][row]["new"] = val_new
 
 
-def output_diff_xlsx(fname: str, data: dict, df_OLD):
+def output_diff_xlsx(fname: str, data: dict, df_old):
 	"""
 	:param data: json data to save as xlsx workbook
 	:param fname: file path of the output file
 	:return: None
 	"""
-	diff = df_OLD.copy()
+	diff = df_old.copy()
 	writer = pd.ExcelWriter(fname, engine='xlsxwriter')
 	for sheet in data.keys():
 		for col in data[sheet].keys():
 			for row in data[sheet][col].keys():
-				value_NEW = data[sheet][col][row]["new"]
-				value_OLD = data[sheet][col][row]["old"]
-				if value_OLD != value_NEW:
-					diff[sheet][col][row] = "{}→{}".format(value_OLD, value_NEW)
+				value_new = data[sheet][col][row]["new"]
+				value_old = data[sheet][col][row]["old"]
+				if value_old != value_new:
+					diff[sheet][col][row] = "{}→{}".format(value_old, value_new)
 		diff_sheet = sheet + "_diff"
 		diff[sheet].to_excel(writer, sheet_name=diff_sheet, index=False)
 

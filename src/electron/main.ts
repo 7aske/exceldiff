@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, protocol, shell } from "electron";
-import { basename, dirname, extname, normalize, join } from "path";
+import { basename, dirname, extname, join, normalize } from "path";
+import { access, constants } from "fs";
 import { exec } from "child_process";
 import * as url from "url";
 
@@ -74,12 +75,25 @@ const getOutFileName = (filename0: string, filename1: string): string => {
 	return basename(filename0).replace(extname(filename0), "").replace(ver0, "") + `${ver0}-${ver1}-diff.xlsx`;
 };
 
+const sendDiffFileStatus = (fullPath: string) => {
+	access(fullPath, constants.F_OK, err => {
+		mainWindow?.webContents.send("diff-file-exists", {exists: !err, path: fullPath});
+	});
+}
+
 
 ipcMain.on("do-diff-file-open", (event, args) => {
 	const filePath = dirname(args[0]);
 	const fileName = getOutFileName(args[0], args[1]);
-	console.log(join(filePath,fileName));
-	shell.openItem(join(filePath,fileName));
+	console.log(join(filePath, fileName));
+	shell.openItem(join(filePath, fileName));
+});
+
+ipcMain.on("do-diff-file-exists", (event, args) => {
+	const filePath = dirname(args[0]);
+	const fileName = getOutFileName(args[0], args[1]);
+	const fullPath = join(filePath,fileName);
+	sendDiffFileStatus(fullPath);
 });
 
 ipcMain.on("do-diff-file", (event, args) => {
@@ -119,6 +133,7 @@ ipcMain.on("do-diff-file", (event, args) => {
 			});
 		}
 
+		sendDiffFileStatus(join(filePath, fileName));
 	});
 });
 

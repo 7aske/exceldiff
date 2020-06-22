@@ -27,7 +27,6 @@ export const DiffRow = ({row}: DiffRowProps) => {
 						out += String.fromCharCode((Math.floor(curr % 26) + 65));
 						curr -= 26;
 					}
-					console.log(out, Buffer.from(out));
 					if (out !== "\0") {
 						str = out + "-" + str;
 					} else {
@@ -38,7 +37,7 @@ export const DiffRow = ({row}: DiffRowProps) => {
 				} else if (i === 4) {
 					str = str.substring(0, str.length - 1);
 				}
-				return <td>{str}</td>;
+				return <td key={i}>{str}</td>;
 			})}
 		</tr>
 	);
